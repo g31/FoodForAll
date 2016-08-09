@@ -1,0 +1,316 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="utf-8">
+<title>Food For All</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<!-- jQueryMobileCSS - styling-->
+		<link rel="stylesheet" href="css/jqeury.mobile.theme.min.css" />
+				
+		<!-- jQueryMobile icons -->
+		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+		
+		<!-- jQueryMobile core CSS -->
+		<link rel="stylesheet" href="css/jquery.mobile.min.css" />
+		
+		<!-- Owl stylesheet -->
+		<link rel="stylesheet" href="css/owl.carousel.css">
+		
+		<!-- Owl Theme -->
+		<link rel="stylesheet" href="css/owl.theme.css">
+				
+		<!-- NIGHTLY style -->
+		<link rel="stylesheet" href="css/nightly.css" />
+				
+		<!-- Load Google Fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic|Oswald:400,700' rel='stylesheet' type='text/css'>
+		
+		<!-- Load Font Awesome Icons -->
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		
+		<!-- jQueryMobile -->
+		<script src="js/jquery.mobile.min.js"></script>
+		
+		<!-- Owl Carousel -->
+		<script src="js/owl.carousel.min.js"></script>
+		
+		<!-- NIGHTLY JS -->
+		<script src="js/nightly.js"></script>
+		
+		<!-- Google maps API -->
+    	<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		
+		 <!--// star rating plugin-specific resources //-->
+		<script src='star-rating/jquery.MetaData.js' type="text/javascript" language="javascript"></script>
+		<script src='star-rating/jquery.rating.js' type="text/javascript" language="javascript"></script>
+  		<link href='star-rating/jquery.rating.css' type="text/css" rel="stylesheet"/>
+
+    <link rel='stylesheet' href='./src/jAlert-v3.css'>
+
+    <script src='./src/jAlert-v3.js'></script>
+
+    <script src='./src/jAlert-functions.js'></script>
+  		
+		<script type="text/javascript">
+       $(function(){
+      /*$.jAlert({
+        'title': 'nada',
+        'content': 'nada',
+        'closeOnEsc': false,
+        'closeOnClick': false
+      });
+      $.jAlert({
+        'title': 'click',
+        'content': 'click',
+        'closeOnClick': true
+      });
+
+      /*$.jAlert({
+        'title': 'esc',
+        'content': 'esc',
+        'closeBtn': false,
+        'closeOnEsc': true
+      });
+      errorAlert('test alert');
+      successAlert('Hi!', 'You did it!');
+      alert('test alert');*/
+    });
+
+ $(document).ready(function($) {
+                            
+                var time = 8; // time in seconds
+                 
+                  var $progressBar,
+                      $bar, 
+                      $elem, 
+                      isPause, 
+                      tick,
+                      percentTime;
+                 
+              
+                    $("#main-slider").owlCarousel({   
+                          
+                          slideSpeed : 700,
+                          paginationSpeed : 700,
+                          rewindSpeed : 1500,
+                          singleItem : true,
+						  pagination : false,
+                          lazyLoad : true,
+                          autoPlay : 10000,
+                          stopOnHover : true,
+                          navigation: false,
+                          navigationText: [
+                            "<i class='owl-nav-left fa fa-angle-left'></i>",
+                            "<i class='owl-nav-right fa fa-angle-right'></i>"
+                            ],
+                          afterInit : progressBar,
+                          afterMove : moved,
+                          startDragging : pauseOnDragging
+                       });
+                 
+                 
+                    function progressBar(elem){
+                      $elem = elem;
+                      buildProgressBar();
+                      start();
+                    }
+                 
+                 
+                    function buildProgressBar(){
+                      $progressBar = $("<div>",{
+                        id:"progressBar"
+                      });
+                      $bar = $("<div>",{
+                        id:"bar"
+                      });
+                      $progressBar.append($bar).prependTo($elem);
+                    }
+                 
+                    function start() {
+                      
+                      percentTime = 0;
+                      isPause = false;
+                      
+                      tick = setInterval(interval, 10);
+                    };
+                 
+                    function interval() {
+                      if(isPause === false){
+                        percentTime += 1 / time;
+                        $bar.css({
+                           width: percentTime+"%"
+                         });
+                         
+                        if(percentTime >= 100){
+                        
+                          $elem.trigger('owl.next')
+                        }
+                      }
+                    }
+                 
+                    function pauseOnDragging(){
+                      isPause = true;
+                    }
+                 
+                    function moved(){
+                    
+                      clearTimeout(tick);
+                      start();
+                    }
+                 
+                    
+                     $elem.on('mouseover',function(){
+                       isPause = true;
+                     })
+                     $elem.on('mouseout',function(){
+                       isPause = false;
+                     })
+            })
+
+ //  AJAX call to get data for notification
+    var id,month,details,json,str,len,count;
+        month = 4;
+        console.log(month);
+        $.ajax({
+            url: "../PHP/reqNotify.php",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                'month': month
+            },
+            success: function (msg) {
+                details = msg;
+                console.log(details);
+                if (details.data.length > 0) {
+                    $.each(details.data, function (key, value) {
+                      /*$('#ralert').append('<p>Volunteer Name=' + value.volname + '</br> Time = ' + value.time + '</br> Recipient Name = ' + value.recname + '</br> Type of Food = ' + value.typefood + '</p>');
+                    });*/
+                            $(function(){
+                              $.jAlert({
+                                'title': 'New Donation Request!!',
+                                'content': '<p>Donors address=' + value.volname + '</br> Donors type of food = ' + value.time + '</br> Donors preferred time = ' + value.recname + '</br> </p>'+' <input type="button" value=accept>'+ " "+'<input type="button" value=reject>' ,
+                                'closeOnClick': true
+                                  });
+                              });
+              });
+                  }
+                else {
+                            $(function(){
+                              $.jAlert({
+                                'title': 'New Donation Request!!',
+                                'content': '<p>You have no requests for food donations. </p>',
+                                'closeOnClick': true
+                                  });
+                              });
+                }
+            }
+        });
+
+    
+
+			</script>
+
+</head> 
+<body>
+<div data-role="page" id="pageActivity" data-theme='b'>
+<div data-role="panel" data-display="push" id="sidebar" data-theme="a">
+	             <ul data-role="listview">
+	                     	<li data-icon='false'><a data-ajax="false" href="volactivitypage.html"><i class="fa fa-home fa-fw"></i>Home</a></li>
+							<li data-icon='false'><a data-ajax="false" href="about.html"><i class="fa fa-file-o fa-fw"></i>About</a></li>
+							<li data-icon='false'><a data-ajax="false" href="volHistory.html"><i class="fa fa-clock-o fa-fw"></i>History</a></li>
+							<li data-icon='false' class="menu-item-has-children"><a href="#"><i class="fa fa-exchange fa-fw"></i>Contact Us</a>
+								<ul data-role="listview" class="sub-menu">
+									<li data-icon='false'><a data-ajax="false" href="mailto:cmpe295asjsu@gmail.com"><i class="fa fa-envelope fa-fw"></i>Email</a></li>
+									<li data-icon='false'><a data-ajax="false" href="tel:4088169958"><i class="fa fa-phone fa-fw"></i>Call</a></li>
+								</ul>
+							</li>
+						
+							<li data-icon='false' class="menu-item-has-children"><a href="#"><i class="fa fa-user fa-fw"></i>Tell Friends</a>
+								<ul data-role="listview" class="sub-menu">
+									<li data-icon='false'><a data-ajax="false" href="#"><i class="fa fa-facebook fa-fw"></i>Facebook</a></li>
+									<li data-icon='false'><a data-ajax="false" href="#"><i class="fa fa-twitter fa-fw"></i>Twitter</a></li>
+								</ul>						
+							</li>
+							<li data-icon='false'><a data-ajax="false" href="../PHP/logout.php"><i class="fa fa-key fa-fw"></i>Logout</a></li>
+				</ul>                         
+	         </div>
+	         
+	         <div data-role="panel" data-display="push" id="sidebar-right" data-position="right" data-theme="a" class="theme-b">
+	            <ul data-role="listview">
+					<li data-icon='false'><a data-ajax="false" href="#"><i class="fa fa-trophy"></i>My Score</a></li>
+					<br/>
+					<li data-icon='false'><a data-ajax="false" href="settings_volunteer.html"><i class="fa fa-gear fa-fw"></i>Settings</a></li>	
+					
+				</ul>
+	         </div> <!-- #right-sidebar -->
+			 
+<!--HEADER OF PAGE-->
+		
+	         <div data-role="header" data-tap-toggle="false" data-theme='b'>
+	             <a href='#sidebar' data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+	             <h1 class="header-title">Food For All</h1>
+				 <a href='#sidebar-right' data-role="none" id="a-right-sidebar"><img src="images/right-menu-icon.png" alt="sidebar" id="header-search-icon" /></a>
+	             
+	         </div>
+<!-- CONTENT of PAGE-->
+<div data-role="content">
+		<div data-role="none" id="main-slider" class="owl-carousel">
+                    <div class="item">
+                      <img src="assets/blog-1.jpg" alt="pic1">
+                      <div class="text">
+                          <h1>Food for all</h1>
+                          <h2>Let's join hands to help prevent hunger</h2>
+                      </div>
+                    </div>
+                    <div class="item">
+                      <img src="assets/blog-2.jpg" alt="pic2">
+                      <div class="text">
+                          <h1></h1>
+                          <h2>Stop food wastage and help the hungry!</h2>
+                      </div>
+                    </div>
+    
+                    <div class="item">
+                      <img src="assets/blog-3.jpg" alt="pic3">
+                      <div class="text">
+                          <h1>Food for all</h1>
+                          <h2>Donate or Volunteer to transfer food</h2>
+                      </div>
+                    </div>
+    
+                    <div class="item">
+                      <img src="assets/blog-4.jpg" alt="pic4">
+                      <div class="text">
+                          <h1>Food for all</h1>
+                          <h2>Channelising excess food to help a needy</h2>
+                      </div>
+                    </div>
+                </div>
+    <!--content for notification starts here -->
+    <div data-role="none" id="ralert" >
+         <!--<span>This is dummy span.</span>-->
+        </div>
+</div>
+<!--FOOTER OF PAGE-->
+ <div data-role="footer" data-theme="none" data-border="false">
+	<div style="text-align:center;">
+				<img src="assets/logo.jpg" alt="logo" width="145" />
+				</div>
+            </div>
+			<div data-role="footer" data-position="fixed" data-border="false" data-tap-toggle="false">
+            	<div data-role="navbar">
+            		<ul>
+            			<li><a href="contact.php"><i class="fa fa-map-marker fa-fw"></i><span>Map</span></a></li>
+            			<li><a href="tel:123456789"><i class="fa fa-phone fa-fw"></i><span>Call</span></a></li>
+            			<li><a href="mailto:cmpe295asjsu@gmail.com"><i class="fa fa-envelope fa-fw"></i><span>E-mail</span></a></li>
+            			<li><a href="https://www.facebook.com/lukepostulka"><i class="fa fa-facebook fa-fw"></i><span>Facebook </span></a></li>
+            			<li><a href="https://twitter.com/lukepostulka"><i class="fa fa-twitter fa-fw"></i><span>Twitter</span></a></li>
+            		</ul>
+            	</div>
+            </div>
+</body>
+</html>
